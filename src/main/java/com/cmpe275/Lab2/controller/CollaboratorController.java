@@ -21,6 +21,8 @@ public class CollaboratorController {
      * Creates collaboration between the two employees with the given IDs
      * @param employeeId1 Employee ID for creating collaboration
      * @param employeeId2 Employee ID for creating collaboration
+     * @param employerId1 Employer ID for creating collaboration
+     * @param employerId2 Employer ID for creating collaboration
      * @return 200 Success message after successful collaboration creation
      *         404 If employee does not exist
      */
@@ -38,13 +40,15 @@ public class CollaboratorController {
         );
         System.out.println("Doneeeeee");
         System.out.println(employeeService.findEmployee(employeeId1, employerId1).toString());
-        return new SuccessResponseDto("Collaboration created successfully");
+        return new SuccessResponseDto("Success - Collaboration created");
     }
 
     /***
      * Removes collaboration between the two employees with the given IDs
-     * @param id1 Employee ID for removing collaboration
-     * @param id2 Employee ID for removing collaboration
+     * @param employeeId1 Employee ID for deleting collaboration
+     * @param employeeId2 Employee ID for deleting collaboration
+     * @param employerId1 Employer ID for deleting collaboration
+     * @param employerId2 Employer ID for deleting collaboration
      * @return 200 Success message after successful collaboration removal
      *         404 If employee does not exist
      */
@@ -59,7 +63,7 @@ public class CollaboratorController {
         employeeService.deleteCollaboration(
                 employeeId1,employerId1, employeeId2, employerId2
         );
-        return new SuccessResponseDto("Collaboration deleted successfully");
+        return new SuccessResponseDto("Success - Collaboration deleted");
     }
 
 }
