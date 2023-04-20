@@ -1,5 +1,7 @@
 package com.cmpe275.Lab2.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.aspectj.lang.annotation.RequiredTypes;
@@ -22,7 +24,6 @@ import java.util.Optional;
 public class Employee implements Serializable  {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
     private long id;
 
@@ -42,31 +43,42 @@ public class Employee implements Serializable  {
     @Embedded
     private Address address;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumns({
-            @JoinColumn(name = "employerId", referencedColumnName = "employerId"),
-            @JoinColumn(name = "id", referencedColumnName = "id")
-    })
+
+    // TODO ONE COLUMN OR TWO COLUMN JOIN
+    @ManyToOne
+    @JoinColumn(name="employerId", nullable=false, updatable = false, insertable = false, referencedColumnName = "id")
+    @JsonIgnoreProperties({"address","employees"})
     private Employer employer;
 
     // TODO
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @PrimaryKeyJoinColumn(name = "manager_id", referencedColumnName = "employerId")
+    @JsonIgnoreProperties({"address", "employer", "manager", "reports", "collaborators", "collaboratedWith"})
     private Employee manager;
 
-    @OneToMany
-    @JoinColumns({
-            @JoinColumn(name = "reports_employerId", referencedColumnName = "employerId"),
-            @JoinColumn(name = "reports_id", referencedColumnName = "id")
-    })
-        private List<Employee> reports;
+    // TODO Mappedby -> Manager
+    @OneToMany(mappedBy="manager")
+    @JsonIgnoreProperties({"address","employer","manager","reports","collaborators","collaboratedWith"})
+    private List<Employee> reports;
 
-    @OneToMany
-    @JoinColumns({
-            @JoinColumn(name = "collaborators_employerId", referencedColumnName = "employerId"),
-            @JoinColumn(name = "collaborators_id", referencedColumnName = "id")
-    })
+    // TODO - Collaboratiopn
+    @ManyToMany
+    @JoinTable(name="collaboration",
+            joinColumns = {
+                    @JoinColumn(name = "employeeId", referencedColumnName = "id"),
+                    @JoinColumn(name = "employerId", referencedColumnName = "employerId")
+            },
+            inverseJoinColumns={
+                    @JoinColumn(name="c_EmployeeId", referencedColumnName = "id"),
+                    @JoinColumn(name = "c_EmployerId", referencedColumnName = "employerId")
+            }
+    )
+    @JsonIgnoreProperties({"address","employer","manager","reports","collaborators","collaboratorWith"})
     private List<Employee> collaborators;
+
+    @ManyToMany(mappedBy = "collaborators")
+    @JsonIgnore
+    private List<Employee> collaboratedWith;
 
     public void update(final Employee fromEmployee) {
         if (Objects.nonNull(fromEmployee.getName())) {

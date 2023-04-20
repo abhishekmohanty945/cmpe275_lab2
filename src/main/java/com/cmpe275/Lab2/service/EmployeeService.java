@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -32,6 +33,11 @@ public class EmployeeService {
     }
 
     public Optional<Employee> findEmployee(long employeeId, String employerId){
+        Optional<Employee> employeeOptional = employeeRepository.findById(new CompositeKey(employeeId, employerId));
+        if (employeeOptional.isPresent()) {
+            Employee employee = employeeOptional.get();
+            System.out.println(employee.toString());
+        }
         return employeeRepository.findById(new CompositeKey(employeeId, employerId));
     }
 
@@ -61,14 +67,31 @@ public class EmployeeService {
         return beforeDelete;
     }
 
-    @Transactional
+
     public void createCollaboration(final long id1, final String employerId1, final long id2, final String employerId2) {
 
         final Employee e1 = (Employee) findEmployee(id1, employerId1).orElse(null);
         final Employee e2 = (Employee) findEmployee(id2, employerId2).orElse(null);
 
-        e1.addCollaborator(e2);
-        e2.addCollaborator(e1);
+        if (e1.getCollaborators() == null) {
+            e1.setCollaborators(new ArrayList<Employee>());
+            e1.getCollaborators().add(e2);
+            System.out.println("step 1 done" + e1.toString());
+        } else {
+            e1.addCollaborator(e2);
+        }
+
+        if (e2.getCollaborators() == null) {
+            e2.setCollaborators(new ArrayList<Employee>());
+            e2.getCollaborators().add(e1);
+            System.out.println("step 2 done" + e2.toString());
+        } else {
+            e2.addCollaborator(e1);
+        }
+        employeeRepository.save(e2);
+        employeeRepository.save(e1);
+        System.out.println("Are we done?");
+
     }
 
 
