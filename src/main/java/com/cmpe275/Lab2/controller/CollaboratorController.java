@@ -48,19 +48,19 @@ public class CollaboratorController {
      * @return 200 Success message after successful collaboration removal
      *         404 If employee does not exist
      */
-//    @DeleteMapping(value = "/{employeeId1}/{employeeId2}/{employerId1}/{employerId2}")
-//    @ResponseBody
-//    @ResponseStatus(HttpStatus.OK)
-//    public SuccessResponseDto deleteEmployee(@PathVariable @NotNull Long employeeId1,
-//                                             @PathVariable @NotNull Long employeeId2,
-//                                             @PathVariable @NotNull String employerId1,
-//                                             @PathVariable @NotNull String employerId2
-//    ) {
-//        employeeService.deleteCollaboration(
-//                employeeId1, employeeId2, employerId1, employerId2
-//        );
-//        return new SuccessResponseDto("Collaboration deleted successfully");
-//    }
+    @DeleteMapping(value = "/collaboration/{employeeId1}/{employeeId2}/{employerId1}/{employerId2}")
+    @ResponseBody
+    @ResponseStatus(HttpStatus.OK)
+    public SuccessResponseDto deleteEmployee(@PathVariable @NotNull Long employeeId1,
+                                             @PathVariable @NotNull Long employeeId2,
+                                             @PathVariable @NotNull String employerId1,
+                                             @PathVariable @NotNull String employerId2
+    ) {
+        employeeService.deleteCollaboration(
+                employeeId1,employerId1, employeeId2, employerId2
+        );
+        return new SuccessResponseDto("Collaboration deleted successfully");
+    }
 
 }
 
