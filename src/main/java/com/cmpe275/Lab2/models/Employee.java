@@ -31,7 +31,6 @@ public class Employee implements Serializable  {
     @Column(name = "employerId")
     private String employerId; // part of the primary key
 
-    @NotNull
     @Column(name= "name", nullable = false)
     private String name;
 
@@ -133,6 +132,14 @@ public class Employee implements Serializable  {
         for (Employee emp: employee.getCollaborators()) {
             this.collaborators.add(emp);
         }
+    }
+
+    public String toString(Employee employee) {
+        StringBuilder res = new StringBuilder();
+        res.append(name);
+        res.append(title);
+        res.append(email);
+        return res.toString();
     }
 
     // constructors, getters/setters
